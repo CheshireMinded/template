@@ -1,0 +1,31 @@
+---
+- name: Deploy web platform template
+  hosts: web
+  become: true
+
+  vars_prompt:
+    - name: deployment_mode
+      prompt: "Choose deployment mode (docker_compose / k8s_helm / bare_metal / static_only)"
+      private: no
+      default: "{{ deployment_mode | default('docker_compose') }}"
+
+    - name: environment
+      prompt: "Environment (dev / staging / prod)"
+      private: no
+      default: "{{ environment | default('staging') }}"
+
+  roles:
+    - role: common
+
+    - role: docker_compose
+      when: deployment_mode == 'docker_compose'
+
+    - role: k8s_helm
+      when: deployment_mode == 'k8s_helm'
+
+    - role: bare_metal
+      when: deployment_mode == 'bare_metal'
+
+    - role: static_only
+      when: deployment_mode == 'static_only'
+

@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "echo \"No lint configured for static-landing yet\""
+    "lint": "echo \"Static landing uses minimal JS; linting intentionally minimal\""
   },
   "devDependencies": {
     "vite": "^6.0.0"

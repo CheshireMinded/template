@@ -1,90 +1,101 @@
-# Security Policy
+# SECURITY.md - Template Repository Disclaimer
 
-> **Important:**  
-> This repository is a **template project** and **not a production system**.  
-> It is provided for learning, experimentation, and as a starting point for your own applications.  
-> **Please do not submit real-world or sensitive vulnerability reports for this template.**
+**IMPORTANT NOTICE - THIS IS A TEMPLATE REPOSITORY**  
+This repository is a *non-production template* provided for demonstration, learning, and project bootstrapping purposes.  
+It is **not an actively maintained software product**, and **no real security monitoring is performed**.
 
----
-
-## Supported Environments
-
-Because this is a **template**, security fixes are applied only to:
-
-- The `main` branch  
-- The most recent tagged release (if applicable)
-
-Older versions or forks of this template are **not** maintained or patched.
+**Do NOT report real-world vulnerabilities, sensitive findings, or exploits to this repository.**  
+There is **no operational security team** associated with this template.
 
 ---
 
-## Reporting a Security Issue
+## Purpose of This File
 
-Since this is not a production application and does not process real data:
+`SECURITY.md` is included **only as an example** of how you might structure a security policy for a real application built *from* this template.
 
-> **Do not submit vulnerability disclosures, exploit proofs, or penetration test results.**
+If you clone or fork this template to build an actual product, you **must replace this file** with:
 
-If you encounter something that looks like a defect or misconfiguration:
+- Your organization's supported version list  
+- Real reporting channels  
+- Disclosure timelines  
+- Incident response procedures  
+- Security ownership (teams, emails, escalation paths)  
 
-- Open a normal **GitHub Issue**  
-- Clearly mark it as: _"Template Security Suggestion"_
-
-This helps improve the template for public use without requiring a formal disclosure process.
-
----
-
-## Intended Use
-
-This project includes:
-
-- Example security headers  
-- Example CI security workflows  
-- Example IAM/RBAC patterns  
-- Example threat modeling (for learning only)
-
-These examples are provided to show recommended practices, but:
-
-> **They are not guaranteed to be complete, hardened, or appropriate for production.**
+The policies included here **are not active** and **do not represent real commitments or contacts**.
 
 ---
 
-## Hardening Baseline (Demonstration Only)
+## Reporting a Vulnerability (Template Notice)
 
-The template demonstrates common security practices such as:
+Because this is a template:
 
-- HTTPS & HSTS (in deployment examples)
-- Strict security headers (CSP, X-Frame-Options, etc.)
-- No secrets committed to the repository
-- Automated dependency scanning (Dependabot / npm audit)
-- Example SAST scanning on pull requests
-- Minimal-permission examples for IAM and Kubernetes RBAC
+- **Do not open security issues**  
+- **Do not email confidentiality-sensitive findings**  
+- **Do not disclose vulnerabilities publicly or privately**  
 
-These are **illustrations**, not requirements.
+There is **no valid security contact** for this repository.
 
-For production use:
+If you use this template in your own organization, you must provide:
 
-> **Perform a full security review and adapt these patterns to your own environment.**
+- A monitored security inbox  
+- An internal or external disclosure process  
+- Verification and remediation SLAs  
+- Disclosure guidelines for third-party researchers  
 
 ---
 
-## Educational Purpose Only
+## Example Only: What a Real Policy Might Contain
 
-All files under `docs/security/` and the included `THREAT_MODEL.md` are meant to:
+In a production environment, your own `SECURITY.md` might describe:
 
-- Demonstrate how a security program may be structured  
-- Provide examples of process & documentation  
-- Serve as starting points for your own projects  
+- **Supported Environments**  
+  Which branches, releases, or services receive fixes.
 
-They should **not** be interpreted as complete or authoritative security policies.
+- **Responsible Disclosure Guidelines**  
+  How researchers should report vulnerabilities securely.
+
+- **Response Timelines**  
+  Example:  
+  - Acknowledge report: 48-72 hours  
+  - Evaluate + assign severity: 5 business days  
+  - Provide remediation plan: 10-15 days  
+
+- **Security Controls**  
+  Such as:  
+  - Mandatory HTTPS  
+  - Security headers  
+  - Secret management policies  
+  - Dependency vulnerability scanning  
+  - IaC and CI/CD hardening  
+
+These items exist in `docs/security/` as examples and learning material only.
+
+---
+
+## Included Security Resources (Demonstration Only)
+
+This template includes *non-binding example documentation*, including:
+
+- Threat model (`THREAT_MODEL.md`)
+- Security headers (`docs/security/security-headers.md`)
+- Pentest templates  
+- Red-team simulation plan  
+- Bug bounty template  
+- Secure SDLC checklist  
+- SOC 2 starter controls  
+- Terraform hardening examples  
+
+These are **educational**, not enforced or monitored.
 
 ---
 
 ## Final Note
 
-If you intend to use this template to build a real application:
+This template repository:
 
-- Replace this file with your own organizational security policy  
-- Configure a real vulnerability disclosure email or process  
-- Review all code, infra, CI/CD, and documentation for production readiness
+- Should NOT receive real vulnerability disclosures  
+- Should NOT be used as an authoritative security reference  
+- **Should be customized** before any real deployment  
+- Can serve as a strong starting point for building your own security program documentation  
 
-Happy building!
+If you fork this template to build a real system, **replace this file immediately** with your actual security policy.

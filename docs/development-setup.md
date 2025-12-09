@@ -22,6 +22,12 @@ You'll get the most seamless experience on:
 - **Docker:** Engine + Buildx + Compose  
 - **Python:** 3.x (for optional tools)  
 
+**Quick Setup:** For automated installation of all requirements, see `requirements/README.md` or run:
+```bash
+chmod +x scripts/setup/install-requirements.sh
+./scripts/setup/install-requirements.sh
+```
+
 Supported environments:
 
 | Component     | Required | Notes                                             |

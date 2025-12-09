@@ -1,0 +1,28 @@
+---
+- name: Local deployment of web platform template
+  hosts: web
+  become: true
+
+  vars_prompt:
+    - name: deployment_mode
+      prompt: "Local deployment mode (docker_compose / bare_metal / static_only)"
+      private: no
+      default: "{{ deployment_mode | default('bare_metal') }}"
+
+    - name: environment
+      prompt: "Local environment (dev / staging / prod)"
+      private: no
+      default: "{{ environment | default('dev') }}"
+
+  roles:
+    - role: common
+
+    - role: docker_compose
+      when: deployment_mode == 'docker_compose'
+
+    - role: bare_metal
+      when: deployment_mode == 'bare_metal'
+
+    - role: static_only
+      when: deployment_mode == 'static_only'
+

@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_name {{ static_server_name }};
+
+    root {{ static_site_root }};
+    index index.html;
+
+    access_log /var/log/nginx/template-static.access.log;
+    error_log  /var/log/nginx/template-static.error.log;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+

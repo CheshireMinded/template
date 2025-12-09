@@ -10,16 +10,52 @@ servers:
     description: Local development
 
 paths:
-  /health:
+  /healthz:
     get:
-      summary: Health check
+      summary: Health check endpoint
+      tags:
+        - Health
       responses:
         '200':
-          description: OK
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  service:
+                    type: string
+                    example: "backend-api"
+                  version:
+                    type: string
+                    example: "1.0.0"
+                  env:
+                    type: string
+                    example: "production"
+                  timestamp:
+                    type: string
+                    format: date-time
 
-  /api/v1/example:
-    get:
-      summary: Example endpoint
+  /api/v1/example/echo:
+    post:
+      summary: Echo endpoint - returns the message sent in request body
+      tags:
+        - Example
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+              properties:
+                message:
+                  type: string
+                  example: "hello"
       responses:
         '200':
           description: Successful response
@@ -28,7 +64,26 @@ paths:
               schema:
                 type: object
                 properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  echo:
+                    type: string
+                    example: "hello"
+                  request_id:
+                    type: string
+                    example: "abc-123"
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "ERR_INVALID_BODY"
                   message:
                     type: string
-                    example: "Hello World"
+                    example: "message must be a non-empty string"
 

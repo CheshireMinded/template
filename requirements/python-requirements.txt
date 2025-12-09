@@ -1,0 +1,19 @@
+# Python Requirements for Template Repository
+# Install with: pip install -r requirements/python-requirements.txt
+
+# Ansible (for deployment automation)
+ansible>=8.0.0
+
+# Security tools (optional but recommended)
+checkov>=3.0.0
+semgrep>=1.40.0
+
+# Pre-commit hooks (if using pre-commit)
+pre-commit>=3.5.0
+
+# SBOM generation (optional)
+cyclonedx-bom>=4.0.0
+
+# Terraform linting (optional)
+tflint>=0.48.0
+

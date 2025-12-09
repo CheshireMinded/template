@@ -12,13 +12,15 @@
 | Field | Description |
 |-------|-------------|
 | `timestamp` | ISO8601 timestamp |
-| `level` | info, warn, error |
+| `level` | debug, info, warn, error |
 | `service` | backend-api, frontend-react, etc |
-| `requestId` | UUID per request |
-| `userId` | If logged in |
+| `request_id` | UUID per request (from requestId middleware) |
+| `userId` | If logged in (optional) |
 | `path` | HTTP path |
 | `method` | HTTP method |
-| `durationMs` | Request handling time |
+| `duration` | Request handling time in milliseconds (from requestLogger middleware) |
+| `status` | HTTP status code |
+| `message` | Log message |
 
 ### Example
 
@@ -27,11 +29,15 @@
   "timestamp": "2025-01-01T00:00:00.000Z",
   "level": "info",
   "service": "backend-api",
-  "requestId": "abc-123",
+  "message": "http_request",
+  "request_id": "abc-123",
   "userId": "42",
-  "path": "/api/v1/example",
-  "method": "GET",
-  "durationMs": 12
+  "path": "/api/v1/example/echo",
+  "method": "POST",
+  "status": 200,
+  "duration": 12
 }
 ```
+
+**Note:** Field names match the actual implementation in `apps/backend-api/src/middleware/requestLogger.ts` and `apps/backend-api/src/config/logger.ts`.
 

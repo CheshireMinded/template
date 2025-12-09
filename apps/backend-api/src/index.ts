@@ -7,6 +7,7 @@ import { getEnv } from "./config/env";
 import { logger } from "./config/logger";
 import { attachRequestId } from "./middleware/requestId";
 import { requestLogger } from "./middleware/requestLogger";
+import { rateLimiter } from "./middleware/rateLimiter";
 import { errorHandler } from "./middleware/errorHandler";
 import { router as healthRouter } from "./health";
 import { router as apiRouter } from "./routes";
@@ -34,6 +35,9 @@ if (env.NODE_ENV !== "test") {
 // Attach request ID & log basic request info
 app.use(attachRequestId);
 app.use(requestLogger);
+
+// Rate limiting (disabled by default, enable via RATE_LIMIT_ENABLED=true)
+app.use(rateLimiter);
 
 // Routes
 app.use("/healthz", healthRouter);

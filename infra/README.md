@@ -2,9 +2,11 @@
 
 This directory contains infrastructure definitions for the web platform:
 
+- `ansible/` - Ansible playbooks for deployment automation (Docker, K8s, bare metal, static)
 - `k8s/` - raw Kubernetes manifests (or Helm chart templates)
 - `helm/` - Helm chart for deploying frontend + backend to Kubernetes
 - `terraform/` - Infrastructure-as-Code for AWS (ECR, S3, CloudFront, DNS/TLS)
+- `docker/` - Docker Compose configurations for local and production use
 
 The overall flow is:
 
@@ -22,6 +24,20 @@ The overall flow is:
 ```text
 infra/
   README.md
+
+  ansible/              # Ansible deployment automation
+    inventory.ini       # Remote server inventory
+    inventory.local.ini # Localhost inventory
+    site.yml            # Main playbook
+    site.local.yml      # Local deployment playbook
+    group_vars/
+      all.yml           # Configuration defaults
+    roles/
+      common/           # Base setup (git, packages)
+      docker_compose/   # Docker Compose deployment
+      k8s_helm/         # Kubernetes Helm deployment
+      bare_metal/       # Node + Nginx direct deployment
+      static_only/      # Static site only deployment
 
   k8s/                  # (optional) raw manifests or legacy
     ...                 # you may still keep basic manifests here
@@ -44,6 +60,10 @@ infra/
         pdb-frontend.yaml
         pdb-backend.yaml
         networkpolicy-backend.yaml
+
+  docker/               # Docker Compose configurations
+    docker-compose.dev.yml
+    docker-compose.prod.yml
 
   terraform/
     envs/

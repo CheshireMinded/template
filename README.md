@@ -21,7 +21,7 @@ This monorepo contains:
 |-------|------------|-------------|
 | Static Site | HTML, Nginx, S3, CloudFront | Fast, cached landing page with full CDN + TLS + Route53 managed domain |
 | Frontend Apps | React + Vite, Vue 3 | Modern SPAs deployed via container images |
-| Backend API | Node.js/Express | Robust REST API with structured logging, centralized error handler, rate limiting, and environment schema validation |
+| Backend API | Node.js/Express | Production-ready REST API with structured logging, centralized error handling, rate limiting, input validation middleware, non-root containers, and strict environment validation |
 | Infrastructure | Terraform | AWS IaC for S3, CloudFront, ACM, Route53, ECR, plus modular structure and environment separation |
 | Orchestration | Helm + Kubernetes | Staging & production workloads deployed via image tag injection (GITHUB_SHA or version tags) |
 | CI/CD | GitHub Actions | Multi-stage pipelines for lint, test, build, security scanning, staging deploy, production release |
@@ -49,12 +49,13 @@ This project systematically integrates security at every layer:
 ### Application Security
 
 - Centralized Express error handler (HttpError pattern)
-- Input validation and sanitization
+- Input validation middleware with schema validation examples
 - Strict JSON-only responses
-- Rate limiting
+- Rate limiting (configurable, disabled by default)
 - Helmet security headers
-- Read-only file systems for containers
-- Non-root containers enforced in Kubernetes
+- Non-root containers (all Dockerfiles use dedicated app user)
+- Environment validation with fail-fast in production
+- Structured logging with request IDs, version, and environment context
 
 ### Cloud & Infra Security
 
@@ -206,6 +207,37 @@ image:
 - HPAs autoscale workloads
 - NetworkPolicies restrict backend to frontend-only access
 
+## Production Hardening Features
+
+### Code Quality & Consistency
+
+- All tests fixed and passing (React, Vue, backend)
+- OpenAPI specification synchronized with actual routes
+- Logging standards aligned between docs and implementation
+- npm workspaces configured for monorepo management
+
+### Container Security
+
+- Non-root users in all Dockerfiles (backend and frontend)
+- Multi-stage builds with proper dependency separation
+- Production-only dependencies in runtime stage
+- Hardened base images (Alpine Linux)
+
+### Application Hardening
+
+- Rate limiting middleware (example implementation, configurable)
+- Input validation middleware with length limits and type checking
+- Environment validation that fails fast in production
+- Structured logging with version, environment, and request context
+- Centralized error handling with proper error codes
+
+### Infrastructure & Deployment
+
+- Ansible playbooks with idempotent operations
+- Secrets management guidance (Ansible Vault, AWS Secrets Manager)
+- Check mode and tags support for safe deployments
+- Multiple deployment modes (Docker Compose, Kubernetes, bare metal, static)
+
 ## Key Outcomes (What This Project Demonstrates)
 
 ### DevOps / SRE Skills
@@ -214,6 +246,7 @@ image:
 - Docker → ECR → Helm → Kubernetes deployment flow
 - Automated image tagging and promotion strategies
 - Service rollout & rollback safety patterns
+- Infrastructure-as-Code with Ansible for multiple deployment strategies
 
 ### Security Engineering
 
@@ -221,12 +254,15 @@ image:
 - TLS everywhere (ACM → CloudFront → Ingress)
 - Network & runtime hardening in Kubernetes
 - Automated vulnerability scanning in CI
+- Production-grade container security (non-root, minimal attack surface)
+- Input validation and rate limiting patterns
 
 ### Full-Stack Engineering
 
 - Multi-framework support (React + Vue)
 - Fully typed Node.js backend with robust architecture
 - Shared configs & conventions across projects
+- Consistent logging and error handling patterns
 
 ### Cloud Architecture
 
@@ -277,10 +313,13 @@ For complete setup instructions, see [Development Setup Guide](docs/development-
 
 - [Architecture Overview](docs/architecture.md)
 - [Golden Path Guide](docs/golden-path.md) - End-to-end feature workflow
-- [Infrastructure Guide](infra/README.md) - Terraform, Helm, and deployment details
+- [Development Setup](docs/development-setup.md) - Local environment setup
+- [Infrastructure Guide](infra/README.md) - Terraform, Helm, Ansible, and deployment details
 - [Security Policies](SECURITY.md)
 - [Threat Model](THREAT_MODEL.md)
+- [Security Documentation Suite](docs/security/index.md) - Complete security templates and guides
 - [Runbooks](docs/runbooks/) - Operational procedures
+- [Project Index](docs/project-index.md) - Directory structure and navigation
 
 ## Project Structure
 

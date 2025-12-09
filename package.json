@@ -2,6 +2,9 @@
   "name": "web-platform-monorepo",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
     "install:apps": "npm --prefix apps/static-landing install && npm --prefix apps/frontend-react install && npm --prefix apps/frontend-vue install && npm --prefix apps/backend-api install",
     "lint": "bash ./scripts/lint-all.sh || npm run lint:fallback",

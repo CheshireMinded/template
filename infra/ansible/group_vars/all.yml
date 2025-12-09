@@ -1,0 +1,39 @@
+# Global deployment choices
+
+# options: docker_compose, k8s_helm, bare_metal, static_only
+deployment_mode: "docker_compose"
+
+# options: dev, staging, prod
+environment: "staging"
+
+# Application selection (used by bare_metal mode)
+deploy_backend: true
+deploy_frontend_react: true
+deploy_frontend_vue: false
+deploy_static_landing: true
+
+# Repository & paths
+repo_url: "https://github.com/CheshireMinded/template.git"
+app_root: "/opt/template"
+
+# Ports (for bare_metal mode)
+backend_port: 3000
+static_site_root: "/var/www/template-static"
+static_server_name: "_"
+
+# TLS toggle for Nginx (template-level; real certs should be handled separately)
+enable_https: false
+
+# Optional behavior
+run_db_migrations: false
+update_system_packages: true
+
+# Python virtual environment (for target machine)
+# Only needed if you want to run Python tools on the target machine
+setup_python_venv: false
+python_venv_path: "{{ app_root }}/venv"
+install_python_requirements: false
+
+# Kubernetes version (for k8s_helm mode)
+kubectl_version: "stable"
+

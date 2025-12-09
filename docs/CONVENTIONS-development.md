@@ -75,7 +75,7 @@ Frontend:
 Every log must include:
 
 - timestamp  
-- requestId  
+- request_id (from requestId middleware)  
 - log level  
 - message  
 - metadata  

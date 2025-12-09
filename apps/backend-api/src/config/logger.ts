@@ -21,12 +21,15 @@ function log(level: Level, message: string, meta?: Record<string, unknown>) {
   const payload = {
     level,
     message,
-    meta,
     timestamp: new Date().toISOString(),
-    service: env.APP_NAME
+    service: env.APP_NAME,
+    version: env.APP_VERSION,
+    environment: env.NODE_ENV,
+    ...meta
   };
 
   // structured JSON logging
+  // See: docs/observability/logging-standards.md
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(payload));
 }

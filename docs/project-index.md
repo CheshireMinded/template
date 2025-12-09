@@ -85,6 +85,12 @@ Static error pages.
 
 ---
 
+## Requirements
+
+- `/requirements/README.md` - Requirements overview and installation guide
+- `/requirements/python-requirements.txt` - Python package dependencies
+- `/requirements/system-requirements.md` - System-level requirements documentation
+
 ## Policies
 
 - `/SECURITY.md`

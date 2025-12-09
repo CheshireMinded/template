@@ -39,11 +39,8 @@ We maintain separate environments for isolation and safety.
 
 ## 4. Environment Configuration
 
-- Shared and environment-specific config stored in:
-  - `env/.env.development.example`
-  - `env/.env.staging.example`
-  - `env/.env.production.example`
-
-Secrets are never committed; they must be stored in the chosen secret management solution.
+- Environment variables are defined in `.env.example` files within each application directory.
+- For the backend API, see `apps/backend-api/.env.example` (if present) or the application README.
+- Secrets are never committed; they must be stored in the chosen secret management solution (Kubernetes Secrets, AWS Secrets Manager, etc.).
 
 Update this document when new environments or URLs are added.

@@ -15,7 +15,7 @@ export function requestLogger(
       method: req.method,
       path: req.originalUrl,
       status: res.statusCode,
-      duration_ms: duration,
+      duration: duration,
       request_id: req.requestId
     });
   });

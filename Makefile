@@ -1,4 +1,4 @@
-.PHONY: install install-apps lint test build dev-backend dev-react dev-vue dev-static pre-commit security-scan security-audit
+.PHONY: install install-apps lint test build dev-backend dev-react dev-vue dev-static pre-commit security-scan security-audit deploy-local-bare-metal deploy-local-docker deploy-local-static
 
 install:
 	npm install
@@ -38,4 +38,16 @@ security-scan:
 security-audit:
 	bash ./scripts/security/audit-docs.sh
 	bash ./scripts/security/scan-deps.sh
+
+deploy-local-bare-metal:
+	ansible-playbook -i infra/ansible/inventory.local.ini infra/ansible/site.local.yml \
+	  -e "deployment_mode=bare_metal environment=dev"
+
+deploy-local-docker:
+	ansible-playbook -i infra/ansible/inventory.local.ini infra/ansible/site.local.yml \
+	  -e "deployment_mode=docker_compose environment=dev"
+
+deploy-local-static:
+	ansible-playbook -i infra/ansible/inventory.local.ini infra/ansible/site.local.yml \
+	  -e "deployment_mode=static_only environment=prod"
 

@@ -81,6 +81,10 @@ See [Security Documentation Index](security/index.md) for the complete security 
 
 - `pipelines/ci-cd-overview.md` - CI/CD pipeline documentation
 
+## Deployment
+
+- `deploy-ansible.md` - Ansible deployment automation guide
+
 ## Observability
 
 - `observability/logging-standards.md` - Structured logging requirements
@@ -92,6 +96,12 @@ See [Security Documentation Index](security/index.md) for the complete security 
 - `CONVENTIONS-commits.md` - Commit message format
 - `CONVENTIONS-development.md` - Development conventions and standards
 - `../CONTRIBUTING.md` - Contribution guidelines
+
+## Requirements
+
+- `../requirements/README.md` - Dependency requirements and installation guide
+- `../requirements/python-requirements.txt` - Python package dependencies
+- `../requirements/system-requirements.md` - System-level requirements documentation
 
 ## Contributing to Docs
 

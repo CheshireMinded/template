@@ -1,0 +1,127 @@
+---
+- name: Install Node.js, npm, and Nginx
+  ansible.builtin.apt:
+    name:
+      - nodejs
+      - npm
+      - nginx
+    state: present
+    update_cache: yes
+  tags: [bare_metal]
+
+- name: Install pm2 globally
+  ansible.builtin.npm:
+    name: pm2
+    global: true
+    state: present
+  tags: [bare_metal]
+
+# Backend
+- name: Install backend dependencies
+  ansible.builtin.shell: |
+    npm install
+  args:
+    chdir: "{{ app_root }}/apps/backend-api"
+  when: deploy_backend | default(true)
+  tags: [backend, bare_metal]
+
+- name: Start backend via pm2
+  ansible.builtin.shell: |
+    pm2 start src/index.ts --name backend-api --interpreter ./node_modules/.bin/ts-node || pm2 restart backend-api
+  args:
+    chdir: "{{ app_root }}/apps/backend-api"
+  when: deploy_backend | default(true)
+  tags: [backend, bare_metal]
+
+# React frontend
+- name: Install React frontend dependencies
+  ansible.builtin.shell: |
+    npm install
+  args:
+    chdir: "{{ app_root }}/apps/frontend-react"
+  when: deploy_frontend_react | default(true)
+  tags: [frontend, react, bare_metal]
+
+- name: Build React frontend
+  ansible.builtin.shell: |
+    npm run build
+  args:
+    chdir: "{{ app_root }}/apps/frontend-react"
+  when: deploy_frontend_react | default(true)
+  tags: [frontend, react, bare_metal]
+
+# Vue frontend
+- name: Install Vue frontend dependencies
+  ansible.builtin.shell: |
+    npm install
+  args:
+    chdir: "{{ app_root }}/apps/frontend-vue"
+  when: deploy_frontend_vue | default(false)
+  tags: [frontend, vue, bare_metal]
+
+- name: Build Vue frontend
+  ansible.builtin.shell: |
+    npm run build
+  args:
+    chdir: "{{ app_root }}/apps/frontend-vue"
+  when: deploy_frontend_vue | default(false)
+  tags: [frontend, vue, bare_metal]
+
+# Static landing
+- name: Install static landing dependencies
+  ansible.builtin.shell: |
+    npm install
+  args:
+    chdir: "{{ app_root }}/apps/static-landing"
+  when: deploy_static_landing | default(true)
+  tags: [frontend, static, bare_metal]
+
+- name: Build static landing site
+  ansible.builtin.shell: |
+    npm run build
+  args:
+    chdir: "{{ app_root }}/apps/static-landing"
+  when: deploy_static_landing | default(true)
+  tags: [frontend, static, bare_metal]
+
+- name: Ensure static site root exists
+  ansible.builtin.file:
+    path: "{{ static_site_root }}"
+    state: directory
+    mode: "0755"
+  when: deploy_static_landing | default(true)
+  tags: [frontend, static, bare_metal]
+
+- name: Copy static site build to web root
+  ansible.builtin.command:
+    cmd: cp -r {{ app_root }}/apps/static-landing/dist/* {{ static_site_root }}/
+  when: deploy_static_landing | default(true)
+  tags: [frontend, static, bare_metal]
+
+# Nginx config (serving static; you can extend to proxy backend)
+- name: Deploy Nginx config for static site
+  ansible.builtin.template:
+    src: nginx-static.conf.j2
+    dest: /etc/nginx/sites-available/template-static
+  tags: [nginx, bare_metal]
+
+- name: Enable Nginx site
+  ansible.builtin.file:
+    src: /etc/nginx/sites-available/template-static
+    dest: /etc/nginx/sites-enabled/template-static
+    state: link
+  tags: [nginx, bare_metal]
+
+- name: Remove default Nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  tags: [nginx, bare_metal]
+
+- name: Reload Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded
+    enabled: true
+  tags: [nginx, bare_metal]
+
