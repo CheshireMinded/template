@@ -30,11 +30,14 @@ A production-grade, end-to-end web platform built using modern DevOps, security 
 - Support for both SQLite (development) and PostgreSQL (production)
 
 ### Testing & Quality
+- **19+ test files** covering unit, integration, and E2E scenarios
+- **Backend**: 9 unit test files + 2 integration test files (auth & todos)
+- **Frontend**: 4 unit test files with MSW mocking
+- **E2E**: 4 Playwright test files (auth flows, todo operations, concurrent operations)
 - MSW (Mock Service Worker) for frontend API mocking
 - Optimistic UI rollback tests (create, update, delete failure scenarios)
-- Playwright E2E tests for authentication and todo flows
-- Unit and integration tests for backend services
-- Test coverage configuration across all applications
+- Test coverage thresholds: 80%+ for critical paths, 90%+ for controllers/routes
+- See [TESTING.md](TESTING.md) for comprehensive test documentation
 
 ### Security Enhancements
 - Environment-specific CORS and rate limiting
