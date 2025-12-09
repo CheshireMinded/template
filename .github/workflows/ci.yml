@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        app: [backend-api, frontend-react, frontend-vue, static-landing]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: apps/${{ matrix.app }}
+        run: npm install
+
+      - name: Lint
+        working-directory: apps/${{ matrix.app }}
+        run: npm run lint --if-present
+
+      - name: Test
+        working-directory: apps/${{ matrix.app }}
+        run: npm test --if-present
+
+      - name: Build
+        working-directory: apps/${{ matrix.app }}
+        run: npm run build --if-present

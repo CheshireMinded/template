@@ -1,0 +1,91 @@
+name: Deploy - Prod
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_FRONTEND_REPO: "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/web-platform-frontend"
+  ECR_BACKEND_REPO: "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/web-platform-backend"
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://app.example.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install deps
+        run: |
+          npm install
+          npm run install:apps
+
+      - name: Build apps
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set image tags
+        id: tags
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push frontend image
+        run: |
+          VERSION="${{ steps.tags.outputs.version }}"
+          FRONTEND_TAG="${ECR_FRONTEND_REPO}:${VERSION}"
+          LATEST_TAG="${ECR_FRONTEND_REPO}:latest"
+          echo "Building frontend image: ${FRONTEND_TAG}"
+          docker build \
+            -t "${FRONTEND_TAG}" \
+            -t "${LATEST_TAG}" \
+            apps/frontend-react
+          docker push "${FRONTEND_TAG}"
+          docker push "${LATEST_TAG}"
+
+      - name: Build and push backend image
+        run: |
+          VERSION="${{ steps.tags.outputs.version }}"
+          BACKEND_TAG="${ECR_BACKEND_REPO}:${VERSION}"
+          LATEST_TAG="${ECR_BACKEND_REPO}:latest"
+          echo "Building backend image: ${BACKEND_TAG}"
+          docker build \
+            -t "${BACKEND_TAG}" \
+            -t "${LATEST_TAG}" \
+            apps/backend-api
+          docker push "${BACKEND_TAG}"
+          docker push "${LATEST_TAG}"
+
+      - name: Deploy to Kubernetes via Helm
+        run: |
+          VERSION="${{ steps.tags.outputs.version }}"
+
+          helm upgrade --install web-platform \
+            infra/helm/web-platform \
+            --namespace web-platform \
+            -f infra/helm/web-platform/values-prod.yaml \
+            --set image.frontend.tag="${VERSION}" \
+            --set image.backend.tag="${VERSION}"
+

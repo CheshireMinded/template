@@ -1,0 +1,12 @@
+{
+  "extends": ["config:recommended"],
+  "timezone": "America/Los_Angeles",
+  "packageRules": [
+    {
+      "matchManagers": ["npm"],
+      "matchPaths": ["apps/**"],
+      "groupName": "frontend dependencies"
+    }
+  ]
+}
+

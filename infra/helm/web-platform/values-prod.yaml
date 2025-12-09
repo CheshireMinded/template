@@ -1,0 +1,13 @@
+namespace: web-platform
+
+image:
+  frontend:
+    tag: "latest"  # CI will override with version
+  backend:
+    tag: "latest"
+
+ingress:
+  hosts:
+    app: "app.example.com"
+    api: "api.example.com"
+

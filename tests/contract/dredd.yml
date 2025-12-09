@@ -1,0 +1,11 @@
+dry-run: false
+hookfiles: []
+language: nodejs
+server: "npm run dev --prefix apps/backend-api"
+server-wait: 5000
+init: false
+custom:
+  apiBlueprintPath: ""
+  swaggerPath: "apps/backend-api/openapi.yaml"
+endpoint: "http://127.0.0.1:3000"
+

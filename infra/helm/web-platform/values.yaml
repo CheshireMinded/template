@@ -1,0 +1,44 @@
+namespace: web-platform
+
+image:
+  frontend:
+    repository: "000000000000.dkr.ecr.us-west-2.amazonaws.com/web-platform-frontend"
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  backend:
+    repository: "000000000000.dkr.ecr.us-west-2.amazonaws.com/web-platform-backend"
+    tag: "latest"
+    pullPolicy: IfNotPresent
+
+frontend:
+  replicas: 3
+
+backend:
+  replicas: 3
+
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    app: "app.example.com"
+    api: "api.example.com"
+  tls:
+    enabled: true
+    secretName: "web-platform-tls"
+
+resources:
+  frontend:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  backend:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1
+      memory: 512Mi
+

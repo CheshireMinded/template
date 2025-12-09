@@ -1,0 +1,13 @@
+namespace: web-platform-staging
+
+image:
+  frontend:
+    tag: "staging-latest" # placeholder; CI will override
+  backend:
+    tag: "staging-latest"
+
+ingress:
+  hosts:
+    app: "staging.app.example.com"
+    api: "staging.api.example.com"
+

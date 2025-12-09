@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: frontend-pdb
+  namespace: web-platform
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: frontend
+

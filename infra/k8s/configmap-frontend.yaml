@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: web-platform
+data:
+  APP_ENV: "production"
+  API_BASE_URL: "https://api.example.com"
+  LOG_LEVEL: "info"
+

@@ -1,0 +1,39 @@
+name: Load Tests
+
+on:
+  schedule:
+    - cron: "0 7 * * 1" # Every Monday at 07:00 UTC
+  workflow_dispatch: {}  # allow manual runs
+
+env:
+  API_BASE_URL: ${{ vars.API_BASE_URL || 'https://staging.api.example.com' }}
+  FRONTEND_BASE_URL: ${{ vars.FRONTEND_BASE_URL || 'https://staging.app.example.com' }}
+
+jobs:
+  k6-load-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install k6
+        run: |
+          K6_VERSION=v0.52.0
+          curl -L "https://github.com/grafana/k6/releases/download/${K6_VERSION}/k6-${K6_VERSION}-linux-amd64.tar.gz" -o k6.tar.gz
+          tar -xzf k6.tar.gz
+          sudo mv k6-${K6_VERSION}-linux-amd64/k6 /usr/local/bin/k6
+          k6 version
+
+      - name: Run API load smoke test
+        run: |
+          k6 run tests/load/k6-api-smoke.js
+        env:
+          API_BASE_URL: ${{ env.API_BASE_URL }}
+
+      - name: Run frontend load smoke test
+        run: |
+          k6 run tests/load/k6-frontend-smoke.js
+        env:
+          FRONTEND_BASE_URL: ${{ env.FRONTEND_BASE_URL }}
+

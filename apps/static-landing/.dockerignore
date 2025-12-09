@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+dist
+.git
+.gitignore
+vite.config.mts
+*.log
+.env
+.env.*
+.vscode
+.idea
+

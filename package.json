@@ -1,0 +1,26 @@
+{
+  "name": "web-platform-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install:apps": "npm --prefix apps/static-landing install && npm --prefix apps/frontend-react install && npm --prefix apps/frontend-vue install && npm --prefix apps/backend-api install",
+    "lint": "bash ./scripts/lint-all.sh || npm run lint:fallback",
+    "lint:fallback": "npm --prefix apps/frontend-react run lint && npm --prefix apps/frontend-vue run lint && npm --prefix apps/static-landing run lint --if-present && npm --prefix apps/backend-api run lint",
+    "test": "bash ./scripts/test-all.sh || npm run test:fallback",
+    "test:fallback": "npm --prefix apps/backend-api test",
+    "build": "bash ./scripts/build-all.sh || npm run build:fallback",
+    "build:fallback": "npm --prefix apps/static-landing run build && npm --prefix apps/frontend-react run build && npm --prefix apps/frontend-vue run build && npm --prefix apps/backend-api run build",
+    "security:audit": "npm audit --audit-level=high || true",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
+    "contract:test": "dredd",
+    "test:coverage": "npm run test:coverage --prefix apps/backend-api && npm run test:coverage --prefix apps/frontend-react && npm run test:coverage --prefix apps/frontend-vue"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "prettier": "^3.0.0"
+  }
+}
+

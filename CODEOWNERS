@@ -1,0 +1,20 @@
+# Default owners for everything in the repo
+* @CheshireMinded
+
+# Apps
+/apps/static-landing/ @CheshireMinded
+/apps/frontend-react/ @CheshireMinded
+/apps/frontend-vue/ @CheshireMinded
+/apps/backend-api/ @CheshireMinded
+
+# Infrastructure
+/infra/ @CheshireMinded
+
+# Security
+SECURITY.md @CheshireMinded
+THREAT_MODEL.md @CheshireMinded
+/docs/security/ @CheshireMinded
+
+# CI/CD
+/.github/workflows/ @CheshireMinded
+

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: {{ .Values.namespace }}
+data:
+  APP_ENV: "production"
+  API_BASE_URL: "https://{{ .Values.ingress.hosts.api }}"
+  LOG_LEVEL: "info"
+
