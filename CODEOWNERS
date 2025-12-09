@@ -1,4 +1,7 @@
-# Default owners for everything in the repo
+# Code Owners
+
+This is a template repository. All code is owned by the template maintainer.
+
 * @CheshireMinded
 
 # Apps
@@ -17,4 +20,3 @@ THREAT_MODEL.md @CheshireMinded
 
 # CI/CD
 /.github/workflows/ @CheshireMinded
-

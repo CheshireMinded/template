@@ -2,6 +2,8 @@
 
 Describe the changes in this PR.
 
+> **Note:** This is a template repository. PRs are reviewed as time permits, and acceptance is not guaranteed.
+
 ## Changes
 
 - [ ] Frontend (React)
@@ -31,4 +33,3 @@ Add any relevant screenshots or logs.
 ## Related Issues
 
 Closes #XXX
-

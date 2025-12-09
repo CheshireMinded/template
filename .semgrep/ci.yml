@@ -1,0 +1,13 @@
+rules:
+  - id: insecure-eval
+    patterns:
+      - pattern: eval(...)
+    message: "Use of eval is dangerous."
+    severity: ERROR
+
+  - id: no-secrets
+    patterns:
+      - pattern-regex: "(?i)(api_key|password|secret)"
+    message: "Potential secret detected."
+    severity: WARNING
+

@@ -2,6 +2,12 @@
 
 A production-grade, end-to-end web platform built using modern DevOps, security engineering, and cloud infrastructure best practices. Designed to demonstrate expertise across frontend, backend, CI/CD, Kubernetes, and AWS IaC.
 
+<!-- Security & Compliance Badges -->
+![Security Templates Included](https://img.shields.io/badge/Security%20Docs-Complete-brightgreen?style=flat-square)
+![SDLC](https://img.shields.io/badge/SDLC-Secure-blue?style=flat-square)
+![Threat Model](https://img.shields.io/badge/Threat%20Model-Available-purple?style=flat-square)
+![Pentest Ready](https://img.shields.io/badge/Pentest%20Docs-Included-orange?style=flat-square)
+
 <!-- Coverage badges (uncomment after setting up Codecov):
 ![CI](https://github.com/CheshireMinded/<YOUR_REPO_NAME>/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/CheshireMinded/<YOUR_REPO_NAME>/branch/main/graph/badge.svg)](https://codecov.io/gh/CheshireMinded/<YOUR_REPO_NAME>)
@@ -20,6 +26,21 @@ This monorepo contains:
 | Orchestration | Helm + Kubernetes | Staging & production workloads deployed via image tag injection (GITHUB_SHA or version tags) |
 | CI/CD | GitHub Actions | Multi-stage pipelines for lint, test, build, security scanning, staging deploy, production release |
 | Security | SAST, dependency scanning, strict security headers, OPA-friendly policies | Security-first architecture aligned to OWASP & CIS recommendations |
+
+## Security Suite Included
+
+This template includes:
+
+- Full security documentation pack  
+- Threat model  
+- Pentest templates  
+- Risk register & control mappings  
+- Red team / purple team planning templates  
+- Secure SDLC checklist  
+- Automated security scripts  
+- Security dashboard  
+
+See: [`docs/security/index.md`](docs/security/index.md)
 
 ## Security-First Foundation
 

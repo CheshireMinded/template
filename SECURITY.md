@@ -1,40 +1,90 @@
 # Security Policy
 
+> **Important:**  
+> This repository is a **template project** and **not a production system**.  
+> It is provided for learning, experimentation, and as a starting point for your own applications.  
+> **Please do not submit real-world or sensitive vulnerability reports for this template.**
+
+---
+
 ## Supported Environments
 
-Security fixes apply to:
+Because this is a **template**, security fixes are applied only to:
 
-- `main` branch (current production)
-- Latest tagged release (`vX.Y.Z`)
+- The `main` branch  
+- The most recent tagged release (if applicable)
 
-## Reporting a Vulnerability
+Older versions or forks of this template are **not** maintained or patched.
 
-Please **do not file public GitHub issues** for security problems.
+---
 
-Instead, email: `security@example.com`  
-Include:
+## Reporting a Security Issue
 
-- Description of the issue
-- Impact (e.g., data exposure, RCE)
-- Steps to reproduce (PoC)
-- Affected environment (dev/staging/prod)
-- Any logs or screenshots
+Since this is not a production application and does not process real data:
 
-We aim to:
+> **Do not submit vulnerability disclosures, exploit proofs, or penetration test results.**
 
-- Acknowledge within **3 business days**
-- Provide a remediation plan within **10 business days**
+If you encounter something that looks like a defect or misconfiguration:
 
-## Hardening Baseline
+- Open a normal **GitHub Issue**  
+- Clearly mark it as: _"Template Security Suggestion"_
 
-We enforce:
+This helps improve the template for public use without requiring a formal disclosure process.
 
-- HTTPS everywhere (HSTS, redirect HTTP → HTTPS)
-- Strict security headers (`Content-Security-Policy`, `X-Frame-Options`, etc.)
-- No secrets in source control (`.env` + secret manager only)
-- Automated dependency scanning (GitHub Dependency Review, npm audit)
-- Automated SAST on PRs (see `.github/workflows/security-sast.yml`)
-- Principle of least privilege in infra (Terraform IAM, K8s RBAC)
+---
 
-See `docs/security/security-headers.md` and `THREAT_MODEL.md` for more details.
+## Intended Use
 
+This project includes:
+
+- Example security headers  
+- Example CI security workflows  
+- Example IAM/RBAC patterns  
+- Example threat modeling (for learning only)
+
+These examples are provided to show recommended practices, but:
+
+> **They are not guaranteed to be complete, hardened, or appropriate for production.**
+
+---
+
+## Hardening Baseline (Demonstration Only)
+
+The template demonstrates common security practices such as:
+
+- HTTPS & HSTS (in deployment examples)
+- Strict security headers (CSP, X-Frame-Options, etc.)
+- No secrets committed to the repository
+- Automated dependency scanning (Dependabot / npm audit)
+- Example SAST scanning on pull requests
+- Minimal-permission examples for IAM and Kubernetes RBAC
+
+These are **illustrations**, not requirements.
+
+For production use:
+
+> **Perform a full security review and adapt these patterns to your own environment.**
+
+---
+
+## Educational Purpose Only
+
+All files under `docs/security/` and the included `THREAT_MODEL.md` are meant to:
+
+- Demonstrate how a security program may be structured  
+- Provide examples of process & documentation  
+- Serve as starting points for your own projects  
+
+They should **not** be interpreted as complete or authoritative security policies.
+
+---
+
+## Final Note
+
+If you intend to use this template to build a real application:
+
+- Replace this file with your own organizational security policy  
+- Configure a real vulnerability disclosure email or process  
+- Review all code, infra, CI/CD, and documentation for production readiness
+
+Happy building!

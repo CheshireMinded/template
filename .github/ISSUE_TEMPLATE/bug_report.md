@@ -1,10 +1,12 @@
 ---
 name: Bug report
-about: Report a defect or regression
+about: Report a defect or issue in the template
 title: "[Bug] "
 labels: bug
 assignees: ""
 ---
+
+> **Note:** This is a template repository. Issues are reviewed periodically, but responses are not guaranteed.
 
 ## Summary
 
@@ -38,4 +40,3 @@ Add any relevant logs or screenshots.
 ## Additional Context
 
 Anything else that might be helpful.
-

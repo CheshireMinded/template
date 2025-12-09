@@ -1,0 +1,6 @@
+rules:
+- id: no-inner-html
+  pattern: element.innerHTML = ...
+  message: "Avoid using innerHTML directly."
+  severity: WARNING
+

@@ -1,7 +1,9 @@
 # Roles & Responsibilities
 
-This document explains how roles interact with this monorepo.  
-Even in a small team, these roles provide clarity and ownership.
+This document provides an example of how roles might interact with a monorepo like this one.  
+It demonstrates common team structures and ownership patterns for reference when building your own projects.
+
+> **Note:** This is a template repository. These role definitions are examples, not active assignments.
 
 ---
 

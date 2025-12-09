@@ -1,6 +1,6 @@
 # Developer Setup Guide
 
-This document explains how to set up a local development environment for the web platform monorepo, including:
+This document explains how to set up a local development environment for this template repository, including:
 
 - Node.js + npm
 - Docker
@@ -9,7 +9,7 @@ This document explains how to set up a local development environment for the web
 - Local dev + test + build commands
 - All helper scripts and what they do
 
-> This repo is designed to feel like a real-world, production-grade platform. The setup reflects that.
+> **Note:** This is a template repository intended for learning and as a starting point for your own projects. The setup demonstrates production-grade patterns but is not a supported production system.
 
 ---
 

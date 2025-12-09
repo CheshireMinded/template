@@ -12,7 +12,11 @@ pnpm-lock.yaml
 .env
 .env.local
 .env.*.local
+env/.env
 env/.env.*.local
+# Allow .example files to be committed
+!env/.env.*.example
+!env/.env.schema.json
 
 # Build outputs
 dist/
@@ -56,5 +60,6 @@ apps/*/coverage/
 
 # Python virtual environment
 venv/
-env/
 .venv/
+# Note: env/ directory is NOT ignored - only .env files are ignored
+# .example files in env/ are committed

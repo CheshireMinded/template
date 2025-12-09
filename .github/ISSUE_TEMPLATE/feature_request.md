@@ -1,10 +1,12 @@
 ---
 name: Feature request
-about: Suggest an enhancement or new feature
+about: Suggest an enhancement or new feature for the template
 title: "[Feature] "
 labels: enhancement
 assignees: ""
 ---
+
+> **Note:** This is a template repository. Feature requests are reviewed as time permits, and implementation is not guaranteed.
 
 ## Summary
 
@@ -30,4 +32,3 @@ List any alternatives or workarounds you considered.
 ## Additional Context
 
 Add any other context, diagrams, or references.
-

@@ -1,4 +1,4 @@
-.PHONY: install install-apps lint test build dev-backend dev-react dev-vue dev-static pre-commit
+.PHONY: install install-apps lint test build dev-backend dev-react dev-vue dev-static pre-commit security-scan security-audit
 
 install:
 	npm install
@@ -30,4 +30,12 @@ dev-static:
 
 pre-commit:
 	bash ./scripts/pre-commit-checks.sh
+
+security-scan:
+	bash ./scripts/security/check-secrets.sh
+	bash ./scripts/security/scan-deps.sh
+
+security-audit:
+	bash ./scripts/security/audit-docs.sh
+	bash ./scripts/security/scan-deps.sh
 

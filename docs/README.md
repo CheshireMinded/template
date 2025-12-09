@@ -10,9 +10,13 @@ This directory contains project documentation for the web platform monorepo.
 - `golden-path.md` - End-to-end developer workflow
 - `diagrams.md` - Mermaid diagrams for architecture & pipelines
 - `development-setup.md` - Local development environment setup guide
+- `onboarding.md` - New developer onboarding guide
 - `glossary.md` - Glossary of tools, technologies, and concepts
 - `roles-and-responsibilities.md` - Team roles and ownership
 - `project-index.md` - Directory structure and navigation guide
+- `tech-choices.md` - Technology selection rationale
+- `governance.md` - Governance model and decision-making
+- `release-process.md` - Release and versioning process
 
 ## Environments
 
@@ -34,9 +38,35 @@ This directory contains project documentation for the web platform monorepo.
 
 ## Security
 
+See [Security Documentation Index](security/index.md) for the complete security documentation suite.
+
+- `security/index.md` - Complete security documentation index
 - `security/security-headers.md` - Required HTTP headers
 - `security/incident-response-template.md` - Incident report structure
 - `security/pentest-scope-template.md` - External test scope template
+- `security/asvs-security-checklist.md` - OWASP ASVS-inspired checklist
+- `security/secure-sdlc-checklist.md` - Secure SDLC checklist
+- `security/security-pr-review-checklist.md` - PR security review checklist
+- `security/pentest-report-template.md` - Penetration test report template
+- `security/red-team-simulation-plan.md` - Red team simulation planning
+- `security/security-risk-register.md` - Risk tracking template
+- `security/architecture-risk-analysis.md` - Architecture risk analysis
+- `security/soc2-starter-controls.md` - SOC2/ISO27001 control mapping
+- `security/devsecops-maturity-model.md` - DevSecOps maturity assessment
+- `security/security-incident-postmortem.md` - Security incident postmortem
+- `security/service-security-questionnaire.md` - Vendor security questionnaire
+- `security/bug-bounty-template.md` - Bug bounty submission template
+- `security/vulnerability-writeup-template.md` - Vulnerability write-up template
+- `security/pentest-rules-of-engagement.md` - Pentest RoE template
+- `security/security-dashboard.md` - Security posture dashboard
+- `security/security-quickstart.md` - Developer security quickstart
+- `security/security-review-cadence.md` - Security review schedule
+- `security/security-controls-owners.md` - Security controls ownership
+- `security/terraform-hardening.md` - Terraform security practices
+- `security/dependency-policy.md` - Dependency governance policy
+- `security/cookie-session-security.md` - Cookie and session security
+- `security/cors-policy.md` - CORS policy template
+- `security/data-classification.md` - Data classification guide
 - `../SECURITY.md` - Security policy
 - `../THREAT_MODEL.md` - Threat model
 
@@ -60,6 +90,7 @@ This directory contains project documentation for the web platform monorepo.
 ## Conventions
 
 - `CONVENTIONS-commits.md` - Commit message format
+- `CONVENTIONS-development.md` - Development conventions and standards
 - `../CONTRIBUTING.md` - Contribution guidelines
 
 ## Contributing to Docs

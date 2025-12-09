@@ -1,6 +1,25 @@
 # Architecture Diagrams
 
-## 1. Cloud Architecture (AWS + K8s)
+## 1. Platform Overview
+
+```mermaid
+flowchart TD
+  User --> Browser
+  Browser --> Frontend[React/Vue App]
+  Frontend --> API[Backend API]
+
+  API --> DB[(Database)]
+  API --> AuthService[(Auth Provider)]
+
+  subgraph Infra[Kubernetes]
+    Frontend
+    API
+  end
+
+  DB --> Storage[(Cloud Storage)]
+```
+
+## 2. Cloud Architecture (AWS + K8s)
 
 ```mermaid
 flowchart LR
@@ -36,7 +55,7 @@ flowchart LR
   gha --> K8sCluster
 ```
 
-## 2. CI/CD Pipeline
+## 3. CI/CD Pipeline
 
 ```mermaid
 flowchart LR
@@ -57,7 +76,7 @@ flowchart LR
   helmProd --> prodNs[web-platform]
 ```
 
-## 3. Application Request Flow
+## 4. Application Request Flow
 
 ```mermaid
 sequenceDiagram
@@ -79,5 +98,40 @@ sequenceDiagram
   BE-->>I: JSON response
   I-->>FE: JSON response
   FE-->>U: Rendered UI updates
+```
+
+## 5. Request Lifecycle
+
+```mermaid
+sequenceDiagram
+  participant User
+  participant Frontend
+  participant Backend
+  participant DB
+
+  User->>Frontend: Click Button
+  Frontend->>Backend: API Request
+  Backend->>DB: Query
+  DB-->>Backend: Result
+  Backend-->>Frontend: JSON Response
+  Frontend-->>User: Render UI
+```
+
+## 6. Security Boundaries
+
+```mermaid
+flowchart TD
+  User --> PublicZone[Public Zone]
+
+  PublicZone --> Frontend
+  Frontend --> API
+
+  subgraph PrivateZone[Private Zone]
+    API --> DB[(Database)]
+    API --> InternalServices
+  end
+
+  style PrivateZone fill:#f0e6ff,stroke:#6600cc
+  style PublicZone fill:#eef,stroke:#3366cc
 ```
 
