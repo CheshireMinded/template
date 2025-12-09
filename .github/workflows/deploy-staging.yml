@@ -46,6 +46,46 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
+      # Fetch secrets from AWS SSM Parameter Store
+      # NOTE: In production, use External Secrets Operator or similar for better secret management
+      - name: Fetch secrets from SSM and create Kubernetes secret
+        run: |
+          # Install kubectl if not available
+          if ! command -v kubectl &> /dev/null; then
+            curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            sudo mv kubectl /usr/local/bin/
+          fi
+          
+          # Fetch secrets from SSM (example - adjust paths as needed)
+          # DATABASE_URL should be in format: postgresql://user:pass@postgres:5432/db
+          DATABASE_URL=$(aws ssm get-parameter \
+            --name "/web-platform/staging/DATABASE_URL" \
+            --with-decryption \
+            --query 'Parameter.Value' \
+            --output text 2>/dev/null || echo "postgresql://user:pass@postgres:5432/web_platform")
+          
+          AUTH_JWT_SECRET=$(aws ssm get-parameter \
+            --name "/web-platform/staging/AUTH_JWT_SECRET" \
+            --with-decryption \
+            --query 'Parameter.Value' \
+            --output text 2>/dev/null || echo "staging-secret-placeholder")
+          
+          # Create Kubernetes secret (if kubectl context is configured)
+          # In CI, you would typically configure kubectl to point to your cluster
+          if kubectl cluster-info &> /dev/null; then
+            kubectl create secret generic backend-secrets \
+              --from-literal=DATABASE_URL="${DATABASE_URL}" \
+              --from-literal=AUTH_JWT_SECRET="${AUTH_JWT_SECRET}" \
+              --namespace web-platform-staging \
+              --dry-run=client -o yaml | kubectl apply -f - || true
+          else
+            echo "Kubectl not configured - skipping secret creation"
+            echo "Secrets should be created manually or via External Secrets Operator"
+          fi
+        env:
+          AWS_REGION: ${{ env.AWS_REGION }}
+
       - name: Build and push frontend image
         run: |
           FRONTEND_TAG="${ECR_FRONTEND_REPO}:staging-${GITHUB_SHA}"

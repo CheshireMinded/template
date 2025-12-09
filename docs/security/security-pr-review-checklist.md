@@ -17,6 +17,7 @@ Reviewers should check:
 - [ ] Authorization checks present  
 - [ ] User input sanitized  
 - [ ] Proper error handling  
+- [ ] See [API Security Checklist](api-security-checklist.md) for comprehensive review  
 
 ---
 

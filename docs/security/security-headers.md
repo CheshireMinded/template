@@ -2,14 +2,22 @@
 
 The platform must return the following HTTP headers on all user-facing endpoints.
 
+> **WARNING: HTTPS Everywhere:** All non-local environments must terminate HTTPS at either a load balancer, ingress controller, or Nginx, with HSTS and modern TLS configuration (TLS 1.2+, TLS 1.3 preferred). Never deploy to production over HTTP.
+
 ## 1. Required Headers
 
-- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload` (HSTS - enforce HTTPS)
 - `Content-Security-Policy: ...` (see below)
-- `X-Content-Type-Options: nosniff`
+- `X-Content-Type-Options: nosniff` (prevent MIME type sniffing)
 - `X-Frame-Options: DENY` (or `SAMEORIGIN` if framing is required)
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy: ...` (limit access to camera, microphone, geolocation, etc.)
+
+**TLS Configuration:**
+- Minimum TLS 1.2 (TLS 1.3 preferred)
+- Strong cipher suites only
+- Certificate validation enforced
+- No mixed content (HTTP resources on HTTPS pages)
 
 ## 2. Content-Security-Policy (CSP)
 

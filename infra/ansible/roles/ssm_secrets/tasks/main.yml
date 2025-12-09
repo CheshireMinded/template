@@ -1,0 +1,75 @@
+---
+# Ansible role for fetching secrets from AWS Systems Manager Parameter Store
+# 
+# Prerequisites:
+# - AWS credentials configured (via AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, or IAM role)
+# - boto3 and botocore Python packages installed
+# - Appropriate IAM permissions to read SSM parameters
+#
+# Example usage:
+#   - role: ssm_secrets
+#     vars:
+#       ssm_secrets:
+#         - name: DATABASE_URL
+#           ssm_path: /web-platform/prod/DATABASE_URL
+#         - name: AUTH_JWT_SECRET
+#           ssm_path: /web-platform/prod/AUTH_JWT_SECRET
+#         - name: POSTGRES_PASSWORD
+#           ssm_path: /web-platform/prod/POSTGRES_PASSWORD
+
+- name: Ensure boto3 is installed
+  pip:
+    name: boto3
+    state: present
+  become: yes
+  when: ansible_python_version is version('3.6', '>=')
+
+- name: Fetch secrets from AWS SSM Parameter Store
+  aws_ssm_parameter:
+    name: "{{ item.ssm_path }}"
+    region: "{{ aws_region | default('us-west-2') }}"
+    with_decryption: true
+  register: ssm_result
+  loop: "{{ ssm_secrets }}"
+  loop_control:
+    label: "{{ item.name }}"
+  no_log: true
+  when: ssm_secrets is defined
+
+- name: Set secrets as facts
+  set_fact:
+    "{{ item.item.name }}": "{{ item.value }}"
+  loop: "{{ ssm_result.results | default([]) }}"
+  when: 
+    - ssm_secrets is defined
+    - item.value is defined
+  no_log: true
+
+- name: Create Kubernetes secret from SSM values
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: "{{ secret_name | default('backend-secrets') }}"
+        namespace: "{{ namespace | default('web-platform') }}"
+      type: Opaque
+      stringData:
+        "{{ item.item.name }}": "{{ item.value }}"
+  loop: "{{ ssm_result.results | default([]) }}"
+  when:
+    - ssm_secrets is defined
+    - item.value is defined
+    - create_k8s_secret | default(false) | bool
+  no_log: true
+
+- name: Display secret names (values hidden)
+  debug:
+    msg: "Fetched secret: {{ item.item.name }}"
+  loop: "{{ ssm_result.results | default([]) }}"
+  when:
+    - ssm_secrets is defined
+    - item.value is defined
+  no_log: true
+

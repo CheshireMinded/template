@@ -2,6 +2,16 @@
 
 Welcome to the **Security Documentation Suite** for this template repository.
 
+> **WARNING: Template Scope Reminder**  
+> The security materials in this repo are **examples and starting points**. They do not make your system automatically secure or legally compliant.  
+> 
+> You are responsible for:
+> - Implementing XSS/CSRF protections appropriate to your actual features
+> - Configuring cookies/sessions safely in your real authentication flows
+> - Defining and meeting any legal/regulatory requirements (GDPR, CCPA, COPPA, etc.)
+> 
+> Use these docs as a *baseline toolkit*, not as a substitute for a real security and compliance program.
+
 > **Note:**  
 > These documents are provided for **educational and reference purposes**.  
 > This repository is a **template**, not a production system.  
@@ -62,6 +72,9 @@ These templates help teams build real-world SDLC and security processes.
 - [Cookie & Session Security](cookie-session-security.md)
 - [CORS Policy](cors-policy.md)
 - [Data Classification](data-classification.md)
+- [Supply Chain Security Policy](supply-chain-policy.md) - SBOM, image signing, policy-as-code
+- [API Security Checklist](api-security-checklist.md) - Security checklist for API endpoints
+- [Privacy & Compliance](privacy-and-compliance.md) - Legal disclaimer and compliance guidance
 
 ---
 

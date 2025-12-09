@@ -1,0 +1,70 @@
+# Prometheus SLO Rules
+# These rules demonstrate how SLOs from docs/observability/metrics-and-slos.md
+# would be implemented in Prometheus.
+
+groups:
+  - name: slos
+    interval: 30s
+    rules:
+      # Backend API Availability SLO: 99.9% monthly uptime
+      # Error Budget: 43.2 minutes per month
+      - record: slo:backend_api:availability:ratio
+        expr: |
+          sum(rate(http_requests_total{service="backend-api",status!~"5.."}[5m]))
+          /
+          sum(rate(http_requests_total{service="backend-api"}[5m]))
+
+      - record: slo:backend_api:availability:error_budget
+        expr: |
+          (slo:backend_api:availability:ratio - 0.999) * 100
+
+      # API Latency SLO: p90 < 150ms, p99 < 400ms for /api/v1/example
+      - record: slo:api:latency:p90
+        expr: |
+          histogram_quantile(0.90,
+            sum(rate(http_request_duration_seconds_bucket{service="backend-api",path=~"/api/v1/.*"}[5m])) by (le)
+          ) * 1000
+
+      - record: slo:api:latency:p99
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket{service="backend-api",path=~"/api/v1/.*"}[5m])) by (le)
+          ) * 1000
+
+      # Frontend Latency SLO: p99 < 300ms for static content
+      - record: slo:frontend:latency:p99
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket{service="frontend-react",path=~"/static/.*"}[5m])) by (le)
+          ) * 1000
+
+      # Error Rate Alert: > 5% over 10 minutes
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{service="backend-api",status=~"5.."}[10m]))
+          /
+          sum(rate(http_requests_total{service="backend-api"}[10m]))
+          > 0.05
+        for: 5m
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} (threshold: 5%)"
+
+      # Latency Alert: p99 > 500ms
+      - alert: HighLatency
+        expr: |
+          slo:api:latency:p99 > 500
+        for: 5m
+        annotations:
+          summary: "High latency detected"
+          description: "p99 latency is {{ $value }}ms (threshold: 500ms)"
+
+      # Pod Restart Alert: > 3 restarts in 10 minutes
+      - alert: ExcessivePodRestarts
+        expr: |
+          increase(kube_pod_container_status_restarts_total[10m]) > 3
+        for: 5m
+        annotations:
+          summary: "Excessive pod restarts"
+          description: "Pod {{ $labels.pod }} has restarted {{ $value }} times in 10 minutes"
+

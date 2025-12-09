@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpError } from "./errorHandler";
+import { getEnv } from "../config/env";
 
 /**
  * Simple rate limiter middleware (example implementation)
@@ -13,13 +14,11 @@ import { HttpError } from "./errorHandler";
  */
 const requestCounts = new Map<string, { count: number; resetAt: number }>();
 
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX_REQUESTS = 100; // per window
-
 export function rateLimiter(req: Request, res: Response, next: NextFunction) {
-  // Rate limiting is disabled by default in template
-  // Enable by setting RATE_LIMIT_ENABLED=true in environment
-  if (process.env.RATE_LIMIT_ENABLED !== "true") {
+  const env = getEnv();
+
+  // Rate limiting is enabled by default in staging/production, disabled in dev
+  if (!env.RATE_LIMIT_ENABLED) {
     return next();
   }
 
@@ -32,12 +31,12 @@ export function rateLimiter(req: Request, res: Response, next: NextFunction) {
     // New window or expired window
     requestCounts.set(clientId, {
       count: 1,
-      resetAt: now + RATE_LIMIT_WINDOW_MS
+      resetAt: now + env.RATE_LIMIT_WINDOW_MS
     });
     return next();
   }
 
-  if (clientData.count >= RATE_LIMIT_MAX_REQUESTS) {
+  if (clientData.count >= env.RATE_LIMIT_MAX_REQUESTS) {
     throw new HttpError(
       429,
       "ERR_RATE_LIMIT",
@@ -48,4 +47,3 @@ export function rateLimiter(req: Request, res: Response, next: NextFunction) {
   clientData.count++;
   next();
 }
-

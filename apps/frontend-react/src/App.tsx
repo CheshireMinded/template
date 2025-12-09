@@ -1,18 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { TodoList } from "./components/TodoList";
+import { Login } from "./components/Login";
+import { isAuthenticated, getAuthUser, removeAuthToken, AuthUser } from "./utils/auth";
 
 export const App: React.FC = () => {
-  const [message, setMessage] = useState("Hello from React frontend!");
+  const [authenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      const authUser = getAuthUser();
+      if (authUser) {
+        setUser(authUser);
+        setAuthenticated(true);
+      } else {
+        removeAuthToken();
+      }
+    }
+    setLoading(false);
+  }, []);
+
+  const handleLogin = (authUser: AuthUser) => {
+    setUser(authUser);
+    setAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    removeAuthToken();
+    setUser(null);
+    setAuthenticated(false);
+  };
+
+  if (loading) {
+    return (
+      <main style={styles.page}>
+        <div style={styles.loading}>Loading...</div>
+      </main>
+    );
+  }
 
   return (
     <main style={styles.page}>
-      <h1>React Frontend</h1>
-      <p>{message}</p>
-      <button
-        style={styles.button}
-        onClick={() => setMessage("You clicked the button!")}
-      >
-        Click me
-      </button>
+      {authenticated ? (
+        <>
+          <div style={styles.header}>
+            <span style={styles.userInfo}>Logged in as: {user?.username}</span>
+            <button onClick={handleLogout} style={styles.logoutButton}>
+              Logout
+            </button>
+          </div>
+          <TodoList />
+        </>
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
     </main>
   );
 };
@@ -20,24 +62,33 @@ export const App: React.FC = () => {
 const styles: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    gap: "1rem",
-    alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#020617",
-    color: "#e5e7eb",
-    fontFamily:
-      'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    color: "#e5e7eb"
   },
-  button: {
+  loading: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    fontSize: "1.25rem"
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "1rem 2rem",
+    borderBottom: "1px solid #374151"
+  },
+  userInfo: {
+    color: "#9ca3af"
+  },
+  logoutButton: {
     padding: "0.5rem 1rem",
-    borderRadius: "999px",
-    border: "none",
-    backgroundColor: "#22c55e",
-    color: "#0f172a",
+    borderRadius: "0.5rem",
+    border: "1px solid #374151",
+    backgroundColor: "#1f2937",
+    color: "#e5e7eb",
     cursor: "pointer",
-    fontWeight: 600
+    fontSize: "0.875rem"
   }
 };
-

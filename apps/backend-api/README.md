@@ -5,9 +5,11 @@ A small, security-conscious Node.js/Express API written in TypeScript.
 ## Features
 
 - Health and version endpoints
-- Example `/api/v1/echo` route
+- Example `/api/v1/example/echo` route
+- Todo CRUD API (`/api/v1/todos`) - Full CRUD operations with in-memory storage
 - Helmet, basic logging, request IDs
 - Centralized error handling with structured JSON errors
+- Input validation middleware
 - Jest tests (unit + integration)
 - Dockerfile for production
 

@@ -89,6 +89,39 @@ These are **educational**, not enforced or monitored.
 
 ---
 
+## Security & Compliance Scope (What This Template Does *Not* Guarantee)
+
+This template includes many **example** security practices and documents, but it does **not** make any real project automatically:
+
+- XSS-safe
+- CSRF-protected
+- Cookie/session hardened
+- Compliant with GDPR, CCPA, COPPA, HIPAA, PCI, or any other regulation
+
+Specifically:
+
+- **XSS**  
+  The frontends use frameworks (React/Vue) that escape HTML by default, and example security headers (including CSP) are documented. However, **it is your responsibility** to:
+  - Validate and encode user input/output
+  - Apply an appropriate Content Security Policy
+  - Handle any rich HTML or user-generated content safely
+
+- **CSRF**  
+  The starter API does not implement authentication or CSRF tokens. If you add cookie-based auth or HTML form flows, **you must** implement CSRF protections (tokens, SameSite cookies, etc.) appropriate to your architecture.
+
+- **Cookies & Sessions**  
+  `docs/security/cookie-session-security.md` is provided as guidance only. The template does not include a production session store or cookie configuration. You must design and configure:
+  - Cookie flags (`Secure`, `HttpOnly`, `SameSite`)
+  - Session lifetimes and rotation
+  - Storage backends and key management
+
+- **Legal & Regulatory Requirements**  
+  Nothing in this repository constitutes legal advice. Data protection laws (e.g., GDPR, CCPA, COPPA) and industry frameworks (e.g., SOC 2, ISO 27001, HIPAA, PCI-DSS) require organization-specific policies, processes, and controls.
+
+If you use this template to build a real system, you are responsible for defining and implementing all necessary **technical**, **organizational**, and **legal** controls to meet your obligations.
+
+---
+
 ## Final Note
 
 This template repository:

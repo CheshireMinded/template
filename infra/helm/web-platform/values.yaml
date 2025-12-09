@@ -26,6 +26,12 @@ ingress:
     enabled: true
     secretName: "web-platform-tls"
 
+postgres:
+  enabled: true
+  imageTag: "16-alpine"
+  database: "web_platform"
+  storageSize: "20Gi"
+
 resources:
   frontend:
     requests:
@@ -41,4 +47,11 @@ resources:
     limits:
       cpu: 1
       memory: 512Mi
+  postgres:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
 
