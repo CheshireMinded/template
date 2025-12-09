@@ -25,7 +25,7 @@ static_server_name: "_"
 enable_https: false
 
 # Optional behavior
-run_db_migrations: false
+run_db_migrations: true
 update_system_packages: true
 run_post_deploy_validation: false
 post_deploy_base_url: ""  # If empty, will be auto-detected from target host IP

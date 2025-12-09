@@ -55,10 +55,22 @@
   when: ansible_user != "root"
   tags: [docker, docker_compose]
 
+- name: Set Postgres environment variables for Docker Compose
+  ansible.builtin.set_fact:
+    postgres_user: "{{ postgres_user | default('web_platform_user') }}"
+    postgres_password: "{{ postgres_password | default('change_me_in_production') }}"
+    postgres_db: "{{ postgres_db | default('web_platform_prod') }}"
+  tags: [deploy, docker_compose]
+
 - name: Bring up Docker Compose stack (prod)
   ansible.builtin.command:
-    cmd: docker compose -f infra/docker/docker-compose.prod.yml up -d
+    cmd: docker compose -f infra/docker/docker-compose.prod.yml up -d --build
     chdir: "{{ app_root }}"
+    environment:
+      POSTGRES_USER: "{{ postgres_user }}"
+      POSTGRES_PASSWORD: "{{ postgres_password }}"
+      POSTGRES_DB: "{{ postgres_db }}"
+      DB_TYPE: "{{ db_type | default('postgres') }}"
   tags: [deploy, docker_compose]
 
 - name: Show running containers

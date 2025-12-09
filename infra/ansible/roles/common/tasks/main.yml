@@ -59,3 +59,41 @@
   when: setup_python_venv | default(false) and install_python_requirements | default(false)
   tags: [common, python, venv, requirements]
 
+- name: Ensure env directory exists
+  ansible.builtin.file:
+    path: "{{ app_root }}/env"
+    state: directory
+    mode: "0755"
+  tags: [common, env]
+
+- name: Generate JWT secret
+  ansible.builtin.shell: |
+    openssl rand -hex 32
+  register: jwt_secret
+  changed_when: false
+  tags: [common, env]
+
+- name: Create production environment file
+  ansible.builtin.template:
+    src: env.production.j2
+    dest: "{{ app_root }}/env/.env.production"
+    mode: "0600"
+  when: environment == "prod" or environment == "production"
+  tags: [common, env]
+
+- name: Create staging environment file
+  ansible.builtin.template:
+    src: env.staging.j2
+    dest: "{{ app_root }}/env/.env.staging"
+    mode: "0600"
+  when: environment == "staging"
+  tags: [common, env]
+
+- name: Create development environment file
+  ansible.builtin.template:
+    src: env.development.j2
+    dest: "{{ app_root }}/env/.env.development"
+    mode: "0600"
+  when: environment == "dev" or environment == "development"
+  tags: [common, env]
+

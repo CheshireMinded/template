@@ -25,9 +25,35 @@
   when: deploy_backend | default(true)
   tags: [backend, bare_metal]
 
+- name: Build backend TypeScript
+  ansible.builtin.shell: |
+    npm run build
+  args:
+    chdir: "{{ app_root }}/apps/backend-api"
+  when: deploy_backend | default(true)
+  tags: [backend, bare_metal]
+
+- name: Create backend data directory
+  ansible.builtin.file:
+    path: "{{ app_root }}/apps/backend-api/data"
+    state: directory
+    mode: "0755"
+  when: deploy_backend | default(true)
+  tags: [backend, bare_metal]
+
+- name: Run database migrations
+  ansible.builtin.shell: |
+    npm run migrate
+  args:
+    chdir: "{{ app_root }}/apps/backend-api"
+    environment:
+      NODE_ENV: "{{ environment }}"
+  when: deploy_backend | default(true) and run_db_migrations | default(true)
+  tags: [backend, bare_metal, migrations]
+
 - name: Start backend via pm2
   ansible.builtin.shell: |
-    pm2 start src/index.ts --name backend-api --interpreter ./node_modules/.bin/ts-node || pm2 restart backend-api
+    pm2 start dist/index.js --name backend-api || pm2 restart backend-api
   args:
     chdir: "{{ app_root }}/apps/backend-api"
   when: deploy_backend | default(true)
