@@ -1,4 +1,4 @@
-.PHONY: install install-apps lint test build dev-backend dev-react dev-vue dev-static pre-commit security-scan security-audit deploy-local-bare-metal deploy-local-docker deploy-local-static
+.PHONY: install install-apps lint test build dev-backend dev-react dev-vue dev-static pre-commit security-scan security-audit deploy-local-bare-metal deploy-local-docker deploy-local-static post-deploy-checks post-deploy-checks-prod
 
 install:
 	npm install
@@ -50,4 +50,12 @@ deploy-local-docker:
 deploy-local-static:
 	ansible-playbook -i infra/ansible/inventory.local.ini infra/ansible/site.local.yml \
 	  -e "deployment_mode=static_only environment=prod"
+
+post-deploy-checks:
+	ENVIRONMENT=staging BASE_URL=http://localhost \
+	  scripts/post-deploy/run-post-deploy-checks.sh
+
+post-deploy-checks-prod:
+	ENVIRONMENT=prod BASE_URL=https://your-prod-domain.example.com \
+	  scripts/post-deploy/run-post-deploy-checks.sh
 

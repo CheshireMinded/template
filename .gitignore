@@ -1,0 +1,68 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Env files
+.env
+.env.local
+.env.*.local
+env/.env
+env/.env.*.local
+# Allow .example files to be committed
+!env/.env.*.example
+!env/.env.schema.json
+
+# Build outputs
+dist/
+build/
+coverage/
+.cache/
+.next/
+out/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Docker
+*.pid
+*.pid.lock
+docker-data/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+.terraform.lock.hcl
+
+# Apps-specific
+apps/*/node_modules/
+apps/*/dist/
+apps/*/build/
+apps/*/coverage/
+
+# Python virtual environment
+venv/
+.venv/
+# Note: env/ directory is NOT ignored - only .env files are ignored
+# .example files in env/ are committed
+
+# Generated reports
+reports/

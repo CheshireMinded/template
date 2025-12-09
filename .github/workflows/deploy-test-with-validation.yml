@@ -1,0 +1,152 @@
+name: Deploy Test Environment with Post-Deploy Validation
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Test environment name'
+        required: false
+        default: 'test'
+        type: string
+      base_url:
+        description: 'Base URL for post-deploy checks'
+        required: false
+        default: 'http://localhost'
+        type: string
+
+env:
+  TEST_ENVIRONMENT: ${{ github.event.inputs.environment || 'test' }}
+  BASE_URL: ${{ github.event.inputs.base_url || 'http://localhost' }}
+
+jobs:
+  deploy-and-validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm run install:apps
+
+      - name: Build apps
+        run: npm run build
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Ansible
+        run: |
+          pip install ansible
+
+      - name: Set up SSH for Ansible (if needed)
+        if: env.TEST_ENVIRONMENT != 'local'
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.TEST_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.TEST_HOST }} >> ~/.ssh/known_hosts || true
+        env:
+          TEST_HOST: ${{ secrets.TEST_HOST || 'localhost' }}
+
+      - name: Deploy with Ansible (Docker Compose local)
+        if: env.TEST_ENVIRONMENT == 'local'
+        run: |
+          cd infra/ansible
+          ansible-playbook -i inventory.local.ini site.local.yml \
+            -e "deployment_mode=docker_compose environment=test" \
+            --connection=local
+
+      - name: Deploy with Ansible (Remote)
+        if: env.TEST_ENVIRONMENT != 'local'
+        run: |
+          cd infra/ansible
+          ansible-playbook -i inventory.ini site.yml \
+            -e "deployment_mode=docker_compose environment=${TEST_ENVIRONMENT}" \
+            -e "ansible_host=${{ secrets.TEST_HOST || 'localhost' }}"
+
+      - name: Wait for services to be ready
+        run: |
+          echo "Waiting for services to start..."
+          max_attempts=30
+          attempt=0
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -f -s "${BASE_URL}/healthz" > /dev/null 2>&1; then
+              echo "Services are ready!"
+              exit 0
+            fi
+            attempt=$((attempt + 1))
+            echo "Attempt $attempt/$max_attempts: Services not ready yet, waiting..."
+            sleep 5
+          done
+          echo "Services did not become ready in time"
+          exit 1
+
+      - name: Install test dependencies
+        run: |
+          # Install Playwright browsers if E2E tests exist
+          if [ -d "tests/e2e" ]; then
+            npx playwright install --with-deps chromium || true
+          fi
+          # Install Dredd if contract tests exist
+          if [ -f "tests/contract/dredd.yml" ]; then
+            npm install -g dredd || true
+          fi
+          # Install k6 if load tests exist
+          if [ -f "tests/load/k6-api-smoke.js" ]; then
+            K6_VERSION=v0.52.0
+            curl -L "https://github.com/grafana/k6/releases/download/${K6_VERSION}/k6-${K6_VERSION}-linux-amd64.tar.gz" -o k6.tar.gz
+            tar -xzf k6.tar.gz
+            sudo mv k6-${K6_VERSION}-linux-amd64/k6 /usr/local/bin/k6
+          fi
+
+      - name: Run post-deploy validation checks
+        run: |
+          ENVIRONMENT="${TEST_ENVIRONMENT}" \
+          BASE_URL="${BASE_URL}" \
+          make post-deploy-checks
+        continue-on-error: true
+
+      - name: Upload post-deploy report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-deploy-report-${TEST_ENVIRONMENT}-${{ github.sha }}
+          path: reports/post-deploy/*.md
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: Display report summary
+        if: always()
+        run: |
+          if [ -d "reports/post-deploy" ]; then
+            echo "## Post-Deploy Validation Report Summary"
+            echo ""
+            latest_report=$(ls -t reports/post-deploy/*.md 2>/dev/null | head -1)
+            if [ -n "$latest_report" ]; then
+              echo "Latest report: $latest_report"
+              echo ""
+              echo "### Report Contents:"
+              head -50 "$latest_report"
+            else
+              echo "No reports found in reports/post-deploy/"
+            fi
+          else
+            echo "Reports directory not found"
+          fi
+

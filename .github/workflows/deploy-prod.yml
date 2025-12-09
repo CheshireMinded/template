@@ -89,3 +89,56 @@ jobs:
             --set image.frontend.tag="${VERSION}" \
             --set image.backend.tag="${VERSION}"
 
+      - name: Wait for deployment to be ready
+        run: |
+          echo "Waiting for deployment to be ready..."
+          max_attempts=60
+          attempt=0
+          PROD_URL="${PROD_BASE_URL:-https://app.example.com}"
+          while [ $attempt -lt $max_attempts ]; do
+            if curl -f -s "${PROD_URL}/healthz" > /dev/null 2>&1; then
+              echo "Deployment is ready!"
+              exit 0
+            fi
+            attempt=$((attempt + 1))
+            echo "Attempt $attempt/$max_attempts: Deployment not ready yet, waiting..."
+            sleep 10
+          done
+          echo "Deployment did not become ready in time"
+          exit 1
+        env:
+          PROD_BASE_URL: ${{ vars.PROD_BASE_URL || 'https://app.example.com' }}
+
+      - name: Install test dependencies
+        run: |
+          if [ -d "tests/e2e" ]; then
+            npx playwright install --with-deps chromium || true
+          fi
+          if [ -f "tests/contract/dredd.yml" ]; then
+            npm install -g dredd || true
+          fi
+          if [ -f "tests/load/k6-api-smoke.js" ]; then
+            K6_VERSION=v0.52.0
+            curl -L "https://github.com/grafana/k6/releases/download/${K6_VERSION}/k6-${K6_VERSION}-linux-amd64.tar.gz" -o k6.tar.gz
+            tar -xzf k6.tar.gz
+            sudo mv k6-${K6_VERSION}-linux-amd64/k6 /usr/local/bin/k6
+          fi
+
+      - name: Run post-deploy validation checks
+        run: |
+          ENVIRONMENT=prod \
+          BASE_URL="${PROD_BASE_URL:-https://app.example.com}" \
+          make post-deploy-checks-prod
+        continue-on-error: true
+        env:
+          PROD_BASE_URL: ${{ vars.PROD_BASE_URL || 'https://app.example.com' }}
+
+      - name: Upload post-deploy report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-deploy-report-prod-${{ steps.tags.outputs.version }}
+          path: reports/post-deploy/*.md
+          retention-days: 90
+          if-no-files-found: warn
+

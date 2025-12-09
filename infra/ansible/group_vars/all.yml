@@ -27,6 +27,8 @@ enable_https: false
 # Optional behavior
 run_db_migrations: false
 update_system_packages: true
+run_post_deploy_validation: false
+post_deploy_base_url: ""  # If empty, will be auto-detected from target host IP
 
 # Python virtual environment (for target machine)
 # Only needed if you want to run Python tools on the target machine

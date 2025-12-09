@@ -327,7 +327,83 @@ Example with AWS Secrets Manager:
 api_key: "{{ lookup('aws_secret', 'prod/api-key', region='us-east-1') }}"
 ```
 
-## 13. Notes & Customization
+## 13. Post-Deploy Validation
+
+After a successful Ansible deployment, you can run automated post-deploy checks to validate that everything is working correctly and securely.
+
+### 13.1 Running Post-Deploy Checks Manually
+
+You can run post-deploy validation checks using the Makefile:
+
+```bash
+# For staging environment
+make post-deploy-checks
+
+# For production environment
+make post-deploy-checks-prod
+```
+
+Or run the script directly:
+
+```bash
+ENVIRONMENT=staging BASE_URL=http://your-server:80 \
+  scripts/post-deploy/run-post-deploy-checks.sh
+```
+
+### 13.2 Enabling Post-Deploy Validation in Ansible
+
+To automatically run post-deploy checks after deployment completes, enable the validation role:
+
+```bash
+ansible-playbook -i inventory.ini site.yml \
+  -e "deployment_mode=docker_compose environment=staging run_post_deploy_validation=true"
+```
+
+You can also specify a custom base URL:
+
+```bash
+ansible-playbook -i inventory.ini site.yml \
+  -e "deployment_mode=docker_compose environment=staging run_post_deploy_validation=true post_deploy_base_url=https://staging.example.com"
+```
+
+### 13.3 What Gets Validated
+
+The post-deploy validation script runs the following checks:
+
+1. **HTTP Health Check** - Verifies the `/healthz` endpoint returns 2xx
+2. **Contract / API Tests** - Runs Dredd contract tests against the live API (if available)
+3. **E2E / UI Smoke Tests** - Runs Playwright tests against the live frontend (if available)
+4. **Load Smoke Tests** - Runs k6 load tests to verify basic performance (if available)
+5. **Security Checks**:
+   - Dependency vulnerability scan (`scan-deps.sh`)
+   - Secrets scan (`check-secrets.sh`)
+   - Container scan (`scan-container.sh`)
+   - SBOM generation (`generate-sbom.sh`)
+
+### 13.4 Reports
+
+All validation results are written to a Markdown report in `reports/post-deploy/`:
+
+```
+reports/post-deploy/post-deploy-<environment>-<timestamp>.md
+```
+
+The report includes:
+- Environment and deployment information
+- Results for each validation check (PASS/FAIL/SKIP)
+- Full output from each test/check
+- Timestamp for audit purposes
+
+These reports can be:
+- Reviewed manually after deployment
+- Uploaded as CI/CD artifacts
+- Stored for compliance and audit purposes
+
+### 13.5 CI/CD Integration
+
+In CI/CD pipelines, post-deploy checks should run after the deployment step completes. The reports can be uploaded as artifacts for review. See the CI workflow examples in `.github/workflows/` for integration patterns.
+
+## 14. Notes & Customization
 
 These playbooks are templates, not production-ready automation.
 
@@ -347,4 +423,5 @@ This Ansible layer is meant to showcase:
 - Local and remote flows using the same repository
 - Idempotent operations
 - Safe deployment practices
+- Post-deploy validation and reporting
 

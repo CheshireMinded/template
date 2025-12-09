@@ -29,3 +29,6 @@
     - role: static_only
       when: deployment_mode == 'static_only'
 
+    - role: post_deploy_validation
+      when: run_post_deploy_validation | default(false)
+

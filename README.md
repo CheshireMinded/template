@@ -102,6 +102,14 @@ helm upgrade --install \
   --set image.backend.tag="staging-${GITHUB_SHA}"
 ```
 
+- Runs post-deploy validation checks:
+  - HTTP health checks
+  - Contract/API tests (Dredd)
+  - E2E smoke tests (Playwright)
+  - Load smoke tests (k6)
+  - Security scans (dependencies, secrets, containers, SBOM)
+- Generates and uploads validation report as CI artifact
+
 ### 3. Production Deployment (Git tags vX.Y.Z)
 
 Triggered on semantic version tags:
@@ -116,6 +124,9 @@ helm upgrade --install \
   --set image.frontend.tag="${VERSION}" \
   --set image.backend.tag="${VERSION}"
 ```
+
+- Runs post-deploy validation checks (same as staging)
+- Generates and uploads validation report as CI artifact (90-day retention)
 
 ## AWS Infrastructure (Terraform)
 
@@ -237,6 +248,9 @@ image:
 - Secrets management guidance (Ansible Vault, AWS Secrets Manager)
 - Check mode and tags support for safe deployments
 - Multiple deployment modes (Docker Compose, Kubernetes, bare metal, static)
+- Post-deploy validation with automated testing and reporting
+  - Health checks, contract tests, E2E tests, load tests, security scans
+  - Markdown reports generated and uploaded as CI artifacts
 
 ## Key Outcomes (What This Project Demonstrates)
 
@@ -315,6 +329,7 @@ For complete setup instructions, see [Development Setup Guide](docs/development-
 - [Golden Path Guide](docs/golden-path.md) - End-to-end feature workflow
 - [Development Setup](docs/development-setup.md) - Local environment setup
 - [Infrastructure Guide](infra/README.md) - Terraform, Helm, Ansible, and deployment details
+- [Ansible Deployment Guide](docs/deploy-ansible.md) - Ansible deployment with post-deploy validation
 - [Security Policies](SECURITY.md)
 - [Threat Model](THREAT_MODEL.md)
 - [Security Documentation Suite](docs/security/index.md) - Complete security templates and guides
@@ -333,9 +348,12 @@ web-platform-monorepo/
 ├── infra/
 │   ├── k8s/                # Kubernetes manifests
 │   ├── helm/               # Helm charts
-│   └── terraform/          # AWS IaC
+│   ├── terraform/          # AWS IaC
+│   └── ansible/            # Ansible playbooks and roles
 ├── docs/                   # Architecture, runbooks, ADRs
 ├── scripts/                # Automation scripts
+│   ├── post-deploy/        # Post-deploy validation scripts
+│   └── security/           # Security scanning scripts
 └── .github/workflows/      # CI/CD pipelines
 ```
 

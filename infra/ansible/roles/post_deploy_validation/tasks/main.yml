@@ -1,0 +1,41 @@
+---
+# Post-deploy validation role
+# Runs post-deploy checks on the control node (where Ansible is running)
+# This assumes the script is available in the repository
+
+- name: Ensure post-deploy script exists
+  stat:
+    path: "{{ playbook_dir }}/../../scripts/post-deploy/run-post-deploy-checks.sh"
+  register: post_deploy_script
+  delegate_to: localhost
+  run_once: true
+
+- name: Fail if post-deploy script not found
+  fail:
+    msg: "Post-deploy validation script not found at scripts/post-deploy/run-post-deploy-checks.sh"
+  when: not post_deploy_script.stat.exists
+  delegate_to: localhost
+  run_once: true
+
+- name: Determine base URL for post-deploy checks
+  set_fact:
+    post_deploy_base_url: "{{ post_deploy_base_url | default('http://' + ansible_default_ipv4.address + ':80') }}"
+  when: post_deploy_base_url is not defined
+  delegate_to: localhost
+  run_once: true
+
+- name: Run post-deploy validation checks
+  shell: |
+    cd "{{ playbook_dir }}/../.."
+    ENVIRONMENT="{{ environment }}" \
+    BASE_URL="{{ post_deploy_base_url }}" \
+    scripts/post-deploy/run-post-deploy-checks.sh
+  delegate_to: localhost
+  run_once: true
+  register: post_deploy_result
+  changed_when: false
+
+- name: Display post-deploy check results
+  debug:
+    msg: "{{ post_deploy_result.stdout_lines }}"
+
